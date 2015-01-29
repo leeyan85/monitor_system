@@ -1,6 +1,6 @@
 import md5
 import time 
-passwd = 'alex3714'
+passwd = 'leeyan'
 time_str = time.time()
 token_str = '%s|%s' %(passwd,time_str)
  
