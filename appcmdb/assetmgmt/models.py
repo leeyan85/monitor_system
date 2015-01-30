@@ -34,7 +34,6 @@ class Groups(models.Model):
     
 class DataCenter(models.Model):
     name = models.CharField(max_length= 20, unique=True)
-    group = models.ManyToManyField(Groups)
     class Meta:
         verbose_name = "机房"
         verbose_name_plural = "机房"
@@ -44,48 +43,88 @@ class DataCenter(models.Model):
     
 class ServiceLines(models.Model):
     name = models.CharField(max_length= 20, unique = True)
+    group = models.ManyToManyField(Groups)
     class Meta:
         verbose_name = "业务线" 
         verbose_name_plural = "业务线"    
         ordering = ['id']
     def __unicode__(self):
         return self.name
-    
+    def groups(self):
+        groups=[]
+        for obj in self.group.select_related():
+            groups.append(obj.name)
+        return groups    
 class DomainName(models.Model):    
     domain_name = models.CharField(max_length=255,unique=True)
-    internal_ipaddr = models.IPAddressField()
-    bcp_ipaddr = models.IPAddressField(blank=True)
-    external_ipaddr = models.IPAddressField(blank=True)
-    BCP_server = models.ForeignKey('BcpServers',null=True,blank=True)
-    server = models.ForeignKey('Servers')
+    internal_addr = models.ForeignKey('IPaddrs')
+    bcp_ipaddr = models.ForeignKey('BCPIPaddrs',blank=True)
     class Meta:
         verbose_name = "域名" 
         verbose_name_plural = "域名"
         ordering = ['id']
     def __unicode__(self):
-        return self.domain_name
-      
+        return self.domain_name 
+    def softwares(self):
+        softs=[]
+        for obj in self.app_software.select_related():
+            softs.append(obj.name)
+        return softs    
+
+        
+class BCPIPaddrs(models.Model):
+    ipaddr = models.IPAddressField(unique=True)
+
+    class Meta:
+        verbose_name = "BCPIP" 
+        verbose_name_plural = "BCPIP"
+        ordering = ['id']
+    def __unicode__(self):
+        return self.ipaddr
+    
+  
+       
+class IPaddrs(models.Model):
+    ipaddr = models.IPAddressField(unique=True)       
+    DMZ = models.BooleanField(default=False)
+    class Meta:
+        verbose_name = "IP" 
+        verbose_name_plural = "IP"
+        ordering = ['id']
+    def __unicode__(self):
+        return self.ipaddr
+            
+
     
 class BcpServers(models.Model):
     hostname =  models.CharField(max_length=255,unique=True)
     location = models.ForeignKey(DataCenter)
+    bcp_ipaddr = models.ManyToManyField('BCPIPaddrs')
     class Meta:
         verbose_name = "BCP服务器"
         verbose_name_plural = "BCP服务器"      
         ordering = ['id']
     def __unicode__(self):
         return self.hostname
-    
+    def ipaddrs(self):
+        ipaddrs=[]
+        for obj in self.bcp_ipaddr.select_related():
+            ipaddrs.append(obj.ipaddr)
+        return ipaddrs
+
+        
 class Servers(models.Model):
-    hostname = models.CharField(max_length=255,unique=True)
-    memory = models.CharField(max_length=20)
-    cpu = models.CharField(max_length=20)
     bcpserver = models.OneToOneField(BcpServers,null=True,blank=True)
+    hostname = models.CharField(max_length=255,unique=True)
+    vitual_machine = models.BooleanField(default=True)
+    memory = models.CharField(max_length=20)
+    cpu = models.SmallIntegerField()
     serviceline = models.ForeignKey(ServiceLines)
     location = models.ForeignKey(DataCenter)
     group = models.ForeignKey(Groups)
     level = models.ForeignKey(ServerLevel)
     app_software = models.ManyToManyField('AppSoftware')
+    ip_addrs = models.ManyToManyField('IPaddrs')
     class Meta:
         ordering = ['id']
         verbose_name = "服务器"
@@ -98,4 +137,10 @@ class Servers(models.Model):
         for obj in self.app_software.select_related():
             softs.append(obj.name)
         return softs
+    
+    def ipaddrs(self):
+        ipaddrs=[]
+        for obj in self.ip_addrs.select_related():
+            ipaddrs.append(obj.ipaddr)
+        return ipaddrs
     

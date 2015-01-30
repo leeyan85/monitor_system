@@ -24,15 +24,29 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
+            name='BCPIPaddrs',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('ipaddr', models.IPAddressField(unique=True)),
+            ],
+            options={
+                'ordering': ['id'],
+                'verbose_name': 'BCPIP',
+                'verbose_name_plural': 'BCPIP',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
             name='BcpServers',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('hostname', models.CharField(unique=True, max_length=255)),
+                ('bcp_ipaddr', models.ManyToManyField(to='assetmgmt.BCPIPaddrs')),
             ],
             options={
                 'ordering': ['id'],
-                'verbose_name': 'BCP\u670d\u52a1\u5668\u5217\u8868',
-                'verbose_name_plural': 'BCP\u670d\u52a1\u5668\u5217\u8868',
+                'verbose_name': 'BCP\u670d\u52a1\u5668',
+                'verbose_name_plural': 'BCP\u670d\u52a1\u5668',
             },
             bases=(models.Model,),
         ),
@@ -53,12 +67,8 @@ class Migration(migrations.Migration):
             name='DomainName',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('domain_name', models.CharField(max_length=255)),
-                ('internal_ipaddr', models.IPAddressField(blank=True)),
-                ('bcp_ipaddr', models.IPAddressField(blank=True)),
-                ('external_ipaddr', models.IPAddressField(blank=True)),
-                ('BCP_server', models.ForeignKey(to='assetmgmt.BcpServers')),
-                ('app_software', models.ForeignKey(to='assetmgmt.AppSoftware')),
+                ('domain_name', models.CharField(unique=True, max_length=255)),
+                ('bcp_ipaddr', models.ForeignKey(to='assetmgmt.BCPIPaddrs', blank=True)),
             ],
             options={
                 'ordering': ['id'],
@@ -82,6 +92,20 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
+            name='IPaddrs',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('ipaddr', models.IPAddressField(unique=True)),
+                ('DMZ', models.BooleanField(default=False)),
+            ],
+            options={
+                'ordering': ['id'],
+                'verbose_name': 'IP',
+                'verbose_name_plural': 'IP',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
             name='ServerLevel',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
@@ -99,17 +123,20 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('hostname', models.CharField(unique=True, max_length=255)),
+                ('vitual_machine', models.BooleanField(default=True)),
                 ('memory', models.CharField(max_length=20)),
-                ('cpu', models.CharField(max_length=20)),
+                ('cpu', models.SmallIntegerField()),
+                ('app_software', models.ManyToManyField(to='assetmgmt.AppSoftware')),
                 ('bcpserver', models.OneToOneField(null=True, blank=True, to='assetmgmt.BcpServers')),
                 ('group', models.ForeignKey(to='assetmgmt.Groups')),
+                ('ip_addrs', models.ManyToManyField(to='assetmgmt.IPaddrs')),
                 ('level', models.ForeignKey(to='assetmgmt.ServerLevel')),
                 ('location', models.ForeignKey(to='assetmgmt.DataCenter')),
             ],
             options={
                 'ordering': ['id'],
-                'verbose_name': '\u670d\u52a1\u5668\u5217\u8868',
-                'verbose_name_plural': '\u670d\u52a1\u5668\u5217\u8868',
+                'verbose_name': '\u670d\u52a1\u5668',
+                'verbose_name_plural': '\u670d\u52a1\u5668',
             },
             bases=(models.Model,),
         ),
@@ -118,6 +145,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(unique=True, max_length=20)),
+                ('group', models.ManyToManyField(to='assetmgmt.Groups')),
             ],
             options={
                 'ordering': ['id'],
@@ -134,14 +162,8 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='domainname',
-            name='server',
-            field=models.ForeignKey(to='assetmgmt.Servers'),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='datacenter',
-            name='group',
-            field=models.ManyToManyField(to='assetmgmt.Groups'),
+            name='internal_addr',
+            field=models.ForeignKey(to='assetmgmt.IPaddrs'),
             preserve_default=True,
         ),
         migrations.AddField(

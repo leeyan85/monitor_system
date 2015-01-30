@@ -6,8 +6,7 @@ from import_export.admin import ImportExportModelAdmin
 class AppSoftwareResource(resources.ModelResource):
     class Meta:
         model = models.AppSoftware
-        
- 
+         
 class ServerLevelResource(resources.ModelResource):
     class Meta:
         model = models.ServerLevel
@@ -22,8 +21,16 @@ class DataCenterResource(resources.ModelResource):
         
 class ServiceLinesResource(resources.ModelResource):
     class Meta:
-        model = models.ServiceLines    
-
+        model = models.ServiceLines   
+         
+class IPaddrsResource(resources.ModelResource):
+    class Meta:
+        model = models.IPaddrs   
+        
+class BCPIPaddrsResource(resources.ModelResource):
+    class Meta:
+        model = models.BCPIPaddrs      
+        
 class DomainNameResource(resources.ModelResource):
     class Meta:
         model = models.DomainName   
@@ -36,7 +43,8 @@ class BcpServersResource(resources.ModelResource):
 class ServersResource(resources.ModelResource):
     class Meta:
         model = models.Servers
-                
+        
+             
                 
 class AppSoftwareAdmin(admin.ModelAdmin):
     resource_class = AppSoftwareResource
@@ -54,21 +62,31 @@ class DataCenterAdmin(admin.ModelAdmin):
         
 class ServiceLinesAdmin(admin.ModelAdmin):
     resource_class = ServiceLinesResource
-    list_display = ['name']
+    list_display = ['name','groups']
 
 class DomainNameAdmin(admin.ModelAdmin):
     resource_class = DomainNameResource  
-    list_display = ['domain_name','internal_ipaddr','external_ipaddr','bcp_ipaddr','BCP_server','server']    
-
+    list_display = ['domain_name',]   
+    
 class BcpServersAdmin(admin.ModelAdmin):
     resource_class = BcpServersResource
     list_display = ['hostname','location']
     
+class IPaddrsAdmin(admin.ModelAdmin):
+    resource_class = IPaddrsResource
+    list_display = ['ipaddr',]
+    
+class BCPIPaddrsAdmin(admin.ModelAdmin):
+    resource_class = BCPIPaddrsResource
+    list_display = ['ipaddr',]   
+    
 class ServersAdmin(admin.ModelAdmin):
     resource_class = ServersResource   
-    list_display = ['hostname','memory','cpu','bcpserver','serviceline','location','group','level','softwares']
+    list_display = ['hostname','memory','cpu','bcpserver','serviceline','location','group','level','softwares','ipaddrs']
                 
 admin.site.register(models.AppSoftware, AppSoftwareAdmin)
+admin.site.register(models.IPaddrs, IPaddrsAdmin)
+admin.site.register(models.BCPIPaddrs, BCPIPaddrsAdmin)
 admin.site.register(models.ServerLevel, ServerLevelAdmin)   
 admin.site.register(models.Groups, GroupsAdmin)   
 admin.site.register(models.DataCenter, DataCenterAdmin)   
