@@ -1,0 +1,67 @@
+{%extends 'devself/Layout/Master_after_login.html'%}
+{%block title%}主页{%endblock%}
+{%block content%}
+<script type="text/javascript">     
+  
+    function showMask(){     
+        $("#mask").css("height",$(document).height());     
+        $("#mask").css("width",$(document).width());     
+        $("#mask").show();     
+    }  
+    //隐藏遮罩层  
+    function hideMask(){     
+          
+        $("#mask").hide();     
+    }  
+     
+</script>
+{%include 'devself/Layout/index.html'%}
+
+    <div class="content">
+        <div class="main-content">
+            
+        <ul class="nav nav-tabs">
+          <li class="active"><a href="#home" data-toggle="tab">{{function_name}}</a></li>
+        </ul>
+        <h4 style="color:red">{{info}}</h4>
+        <div class="row">
+          <div class="col-md-4">
+            <br>
+            <div id="myTabContent" class="tab-content">         
+              <div class="tab-pane active in" id="home">
+                <form role="form" method="POST" action=''>
+                    <div class="form-group">
+                        <label for="name">SourceIP</label>
+                        <select class="form-control" name="sourceIP">
+                            <option>{{sourceip}}</option>
+                        </select>
+                        <label for="name">BackupIP</label>
+                        <select class="form-control" name="backupserverip">
+                            {% for ip in backupserverips %}
+                            <option>{{ip}}</option>
+                            {%endfor%}
+                        </select>
+                    </div>
+                    <input id="actions" type='submit' class="btn btn-primary btn-lg" value='{{button_value}}'/>
+                </form>
+              </div>
+            </div>
+          </div>
+         </div>
+        </div>
+    
+   
+    </div>  
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" style="top:30%;z-index:2">
+       <div class="modal-dialog">
+          <div class="modal-content">
+             <div class="modal-body">
+                request is processing, wait a moment please !
+             </div>
+          </div><!-- /.modal-content -->
+    </div> 
+{%include 'devself/Layout/footer.html'%}         
+<script>
+
+</script>    
+{%endblock%}

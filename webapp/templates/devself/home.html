@@ -1,0 +1,37 @@
+{%extends 'devself/Layout/Master_after_login.html'%}
+{%block title%}主页{%endblock%}
+{%block content%}
+{%include 'devself/Layout/index.html'%}
+
+
+<div class="content">
+<div class="main-content">
+
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Hostname</th>
+      <th>IPaddress</th>
+      <th style="width: 3.5;">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+        {% for key,value in vms.items %}
+            <tr> 
+              <td  style="vertical-align:middle;">{{ key.hostid.name }}</td>
+              <td  style="vertical-align:middle;">{{ value.ip }}</td>
+              <td>             
+                  <!--<a href="/webapp/devself/mountnfs/{{ value.ip }}" class="btn btn-primary "  style="width: 160px;margin: 2px"> Mount NFS disk</a></br>-->
+                  <a href="/webapp/devself/restartvnc/{{ value.ip }}" class="btn btn-primary" style="width: 160px;margin: 2px">Restart VNC service</a></br>
+                  <a href="/webapp/devself/modifypassword/{{ value.ip }}"  class="btn btn-primary" style="width: 160px;margin: 2px">Reset VM password</a></br>
+                  <!--<a href="/webapp/devself/restoreserver/{{ value.ip }}"  class="btn btn-primary" style="width: 160px;margin: 2px"> Restore Account Info</a></br>-->
+              </td>      
+            </tr>
+        {% endfor %}
+    
+
+  </tbody>
+</table>
+{%include 'devself/Layout/footer.html'%}    
+{%endblock%}

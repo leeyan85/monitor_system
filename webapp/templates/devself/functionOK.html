@@ -1,0 +1,24 @@
+{%extends 'devself/Layout/Master_after_login.html'%}
+{%block title%}主页{%endblock%}
+{%block content%}
+{%include 'devself/Layout/index.html'%}
+
+    <div class="content">
+        <div class="main-content">
+            
+             <div class="dialog">
+                <div class="panel panel-default">
+                    <p class="panel-heading no-collapse">{{title}}</p>
+                    <div class="panel-body">
+                            <h5 style="color:red">{{info}}</h5>
+                            <a href="/webapp/devself/home/" class="btn btn-primary pull-right">Confirm</a>
+                    </div>
+                </div>
+                   
+            </div>
+        </div>
+        {%include 'devself/Layout/footer.html'%}
+    </div>
+
+{%endblock%}
+

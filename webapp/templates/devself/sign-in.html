@@ -1,0 +1,77 @@
+{%extends 'devself/Layout/Master_before_login.html'%}
+{%block style%}
+    input{
+        
+    }
+{%endblock%}
+
+{%block title%}
+    VM devself system
+{%endblock%}
+
+{%block content%}
+    <script type="text/javascript">
+        $(function() {
+            var match = document.cookie.match(new RegExp('color=([^;]+)'));
+            if(match) var color = match[1];
+            if(color) {
+                $('body').removeClass(function (index, css) {
+                    return (css.match (/\btheme-\S+/g) || []).join(' ')
+                })
+                $('body').addClass('theme-' + color);
+            }
+
+            $('[data-popover="true"]').popover({html: true});
+            
+        });
+    </script>
+    <style type="text/css">
+        #line-chart {
+            height:300px;
+            width:800px;
+            margin: 0px auto;
+            margin-top: 1em;
+        }
+        .navbar-default .navbar-brand, .navbar-default .navbar-brand:hover { 
+            color: #fff;
+        }
+    </style>
+
+    <script type="text/javascript">
+        $(function() {
+            var uls = $('.sidebar-nav > ul > *').clone();
+            uls.addClass('visible-xs');
+            $('#main-menu').append(uls.clone());
+        });
+    </script>
+
+
+    <div class="navbar navbar-default" role="navigation">
+        <div class="navbar-header">
+          <a class="" href="#"><span class="navbar-brand"><img src="/static/images/leeco.png" style='width: 90px;height:30px'/>&nbsp;&nbsp;SEEVM devself system</span></a></div>
+
+        <div class="navbar-collapse collapse" style="height: 1px;">
+
+        </div>
+      </div>
+    </div>
+    
+
+
+    <div class="dialog">
+    <div class="panel panel-default">
+        <p class="panel-heading no-collapse">LogIn</p>
+        <div class="panel-body">
+            <form method='POST' action="/webapp/devself/accounts/login/">
+            {%csrf_token%}
+                <div class="form-group">
+                    {{loginform.as_p}}
+                </div>
+                <span>{{LoginStatus}}</span><input type='submit' class="btn btn-primary pull-right" value='login'/>
+                <input type="hidden" name="next" value="{{ next }}" />
+            </form>
+        </div>
+    </div>
+</div>
+
+{%endblock%}

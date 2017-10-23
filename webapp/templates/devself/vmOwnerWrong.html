@@ -1,0 +1,19 @@
+{%extends 'devself/Layout/Master_after_login.html'%}
+{%block title%}主页{%endblock%}
+{%block content%}
+{%include 'devself/Layout/index.html'%}
+
+
+<div class="dialog">
+    <div class="panel panel-default">
+        <p class="panel-heading no-collapse">Reset VM password wrong</p>
+        <div class="panel-body">
+                <h5 style="color:red">VM {{ipaddress}} is not belong to you, please select right VM</h5>
+                <a href="/webapp/devself/home/" class="btn btn-primary pull-right">Confirm</a>
+        </div>
+    </div>
+</div>
+
+
+{%include 'devself/Layout/footer.html'%}    
+{%endblock%}
